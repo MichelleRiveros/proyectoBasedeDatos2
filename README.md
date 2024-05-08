@@ -402,6 +402,7 @@ INSERT INTO asignatura VALUES (37, 'Sistemas de tiempo real', 6, 4, 2, 2, 23, 4)
 INSERT INTO asignatura VALUES (38, 'Tecnologías de acceso a red', 6, 4, 1, 1, 17, 4);
 INSERT INTO asignatura VALUES (39, 'Tratamiento digital de imágenes', 6, 4, 1, 3, 15, 4);
 INSERT INTO asignatura VALUES (40, 'Administración de redes y sistemas operativos', 6, 5, 3, 4, 13, 4);
+INSERT INTO asignatura VALUES (41, 'Almacenes de Datos', 6, 1, 2, 3, 14, 7);
 
 - profesor_telefono
 
@@ -526,6 +527,90 @@ INSERT INTO alumno_se_matricula_asignatura VALUES (4, 7, 2);
 INSERT INTO alumno_se_matricula_asignatura VALUES (4, 8, 2);
 INSERT INTO alumno_se_matricula_asignatura VALUES (4, 9, 2);
 INSERT INTO alumno_se_matricula_asignatura VALUES (4, 10, 2);
+   ```
 
+**Consultas sobre una tabla**
 
+1. Devuelve un listado con el primer apellido, segundo apellido y el nombre de todos los alumnos. El listado deberá estar ordenado alfabéticamente de menor a mayor por el primer apellido, segundo apellido y nombre.
 
+```mysql
+SELECT nombre_alumno, apellido1_alumno, apellido2_alumno
+FROM alumno 
+ORDER BY apellido1_alumno, apellido2_alumno, nombre_alumno ASC;
+
++---------------+------------------+------------------+
+| nombre_alumno | apellido1_alumno | apellido2_alumno |
++---------------+------------------+------------------+
+| Antonio       | Domínguez        | Guerrero         |
+| Sonia         | Gea              | Ruiz             |
+| Juan          | Gutiérrez        | López            |
+| Pedro         | Heller           | Pagac            |
+| Daniel        | Herman           | Pacocha          |
+| Irene         | Hernández        | Martínez         |
+| Ramón         | Herzog           | Tremblay         |
+| José          | Koss             | Bayer            |
+| Inma          | Lakin            | Yundt            |
+| Juan          | Saez             | Vega             |
+| Salvador      | Sánchez          | Pérez            |
+| Ismael        | Strosin          | Turcotte         |
++---------------+------------------+------------------+
+12 rows in set (0.00 sec)
+   ```
+
+2. Averigua el nombre y los dos apellidos de los alumnos que no han dado de
+alta su número de teléfono en la base de datos.
+
+```mysql
+SELECT nombre_alumno, apellido1_alumno, apellido2_alumno
+FROM alumno
+LEFT JOIN alumno_telefono ON alumno.id_alumno = alumno_telefono.id_alumno
+WHERE alumno_telefono.id_alumno IS NULL;
+
+Empty set (0.00 sec)
+   ```
+
+3. Devuelve el listado de los alumnos que nacieron en 1999.
+   
+```mysql
+SELECT nombre_alumno
+FROM alumno 
+WHERE YEAR(fecha_nacimiento)  = 1999;
+
++---------------+
+| nombre_alumno |
++---------------+
+| Ismael        |
+| Antonio       |
++---------------+
+2 rows in set (0.00 sec)
+   ```
+
+4. Devuelve el listado de profesores que no han dado de alta su número de
+teléfono en la base de datos y además su nif termina en K.
+
+```mysql
+SELECT p.nombre_profesor
+FROM profesor as p
+RIGHT JOIN profesor_telefono as pt ON pt.id_profesor = p.id_profesor
+WHERE  pt.id_profesor IS NULL AND p.nif LIKE  '%K';
+
+Empty set (0.00 sec)
+   ```
+
+5. Devuelve el listado de las asignaturas que se imparten en el primer
+cuatrimestre, en el tercer curso del grado que tiene el identificador 7.
+
+```mysql
+SELECT a.nombre as Asignatura
+FROM asignatura as a
+WHERE cuatrimestre = 1
+AND id_curso = 3
+AND id_grado = 7;
+
++--------------------+
+| Asignatura         |
++--------------------+
+| Almacenes de Datos |
++--------------------+
+1 row in set (0.00 sec)
+   ```
