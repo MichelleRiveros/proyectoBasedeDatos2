@@ -445,18 +445,18 @@ INSERT INTO profesor_direccion (id_profesor, id_direccion) VALUES
 
 - Alumno
 
-INSERT INTO alumno VALUES (1, '89542419S', 'Juan', 'Saez', 'Vega', '1992/08/08', 2);
-INSERT INTO alumno VALUES (2, '26902806M', 'Salvador', 'Sánchez', 'Pérez', '1991/03/28', 2);
-INSERT INTO alumno VALUES (4, '17105885A', 'Pedro', 'Heller', 'Pagac', '2000/10/05', 2);
-INSERT INTO alumno VALUES (6, '04233869Y', 'José', 'Koss', 'Bayer', '1998/01/28', 2);
-INSERT INTO alumno VALUES (7, '97258166K', 'Ismael', 'Strosin', 'Turcotte', '1999/05/24', 2);
+INSERT INTO alumno VALUES (1, '89542419S', 'Juan', 'Saez', 'Vega', '1992/08/08', 1);
+INSERT INTO alumno VALUES (2, '26902806M', 'Salvador', 'Sánchez', 'Pérez', '1991/03/28', 1);
+INSERT INTO alumno VALUES (4, '17105885A', 'Pedro', 'Heller', 'Pagac', '2000/10/05', 1);
+INSERT INTO alumno VALUES (6, '04233869Y', 'José', 'Koss', 'Bayer', '1998/01/28', 1);
+INSERT INTO alumno VALUES (7, '97258166K', 'Ismael', 'Strosin', 'Turcotte', '1999/05/24', 1);
 INSERT INTO alumno VALUES (9, '82842571K', 'Ramón', 'Herzog', 'Tremblay', '1996/11/21', 2);
-INSERT INTO alumno VALUES (11, '46900725E', 'Daniel', 'Herman', 'Pacocha', '1997/04/26', 2);
-INSERT INTO alumno VALUES (19, '11578526G', 'Inma', 'Lakin', 'Yundt', '1998/09/01', 3);
-INSERT INTO alumno VALUES (21, '79089577Y', 'Juan', 'Gutiérrez', 'López', '1998/01/01', 2);
-INSERT INTO alumno VALUES (22, '41491230N', 'Antonio', 'Domínguez', 'Guerrero', '1999/02/11', 2);
-INSERT INTO alumno VALUES (23, '64753215G', 'Irene', 'Hernández', 'Martínez', '1996/03/12', 3);
-INSERT INTO alumno VALUES (24, '85135690V', 'Sonia', 'Gea', 'Ruiz', '1995/04/13', 3);
+INSERT INTO alumno VALUES (11, '46900725E', 'Daniel', 'Herman', 'Pacocha', '1997/04/26', 1);
+INSERT INTO alumno VALUES (19, '11578526G', 'Inma', 'Lakin', 'Yundt', '1998/09/01', 2);
+INSERT INTO alumno VALUES (21, '79089577Y', 'Juan', 'Gutiérrez', 'López', '1998/01/01', 1);
+INSERT INTO alumno VALUES (22, '41491230N', 'Antonio', 'Domínguez', 'Guerrero', '1999/02/11', 1);
+INSERT INTO alumno VALUES (23, '64753215G', 'Irene', 'Hernández', 'Martínez', '1996/03/12', 2);
+INSERT INTO alumno VALUES (24, '85135690V', 'Sonia', 'Gea', 'Ruiz', '1995/04/13', 2);
 
 alumno_direccion
 
@@ -614,3 +614,212 @@ AND id_grado = 7;
 +--------------------+
 1 row in set (0.00 sec)
    ```
+
+**Consultas multitabla (Composición interna)**
+
+1. Devuelve un listado con los datos de todas las alumnas que se han
+matriculado alguna vez en el Grado en Ingeniería Informática (Plan 2015).
+
+```mysql
+SELECT a.nombre_alumno, a.nif, a.apellido1_alumno, a.apellido2_alumno, a.fecha_nacimiento, a.id_sexo as genero, g.id_grado
+FROM alumno as a 
+LEFT JOIN sexo as s ON s.id_sexo = a.id_sexo
+LEFT JOIN   alumno_se_matricula_asignatura as ams ON ams.id_alumno = a.id_alumno
+JOIN asignatura as asig ON asig.id_asignatura = ams.id_asignatura
+JOIN grado as g ON g.id_grado = asig.id_grado
+WHERE s.tipo = 'Femenino' 
+AND g.nombre = 'Grado en Ingeniería Informática'
+AND g.anyo = 2015;
+
++---------------+-----------+------------------+------------------+------------------+--------+----------+
+| nombre_alumno | nif       | apellido1_alumno | apellido2_alumno | fecha_nacimiento | genero | id_grado |
++---------------+-----------+------------------+------------------+------------------+--------+----------+
+| Inma          | 11578526G | Lakin            | Yundt            | 1998-09-01       |      2 |        4 |
++---------------+-----------+------------------+------------------+------------------+--------+----------+
+1 row in set (0.00 sec)
+
+   ```
+
+2. Devuelve un listado con todas las asignaturas ofertadas en el Grado en
+Ingeniería Informática (Plan 2015).
+
+```mysql
+
+SELECT a.nombre as nombre_de_la_asignatura
+FROM asignatura as a
+ JOIN grado as g ON g.id_grado = a.id_grado
+WHERE g.nombre = 'Grado en Ingeniería Informática'
+AND g.anyo = 2015;
+
++---------------------------------------------------------------------------+
+| nombre_de_la_asignatura                                                   |
++---------------------------------------------------------------------------+
+| Álgegra lineal y matemática discreta                                      |
+| Cálculo                                                                   |
+| Física para informática                                                   |
+| Introducción a la programación                                            |
+| Organización y gestión de empresas                                        |
+| Estadística                                                               |
+| Estructura y tecnología de computadores                                   |
+| Fundamentos de electrónica                                                |
+| Lógica y algorítmica                                                      |
+| Metodología de la programación                                            |
+| Arquitectura de Computadores                                              |
+| Estructura de Datos y Algoritmos I                                        |
+| Ingeniería del Software                                                   |
+| Sistemas Inteligentes                                                     |
+| Sistemas Operativos                                                       |
+| Fundamentos de Redes de Computadores                                      |
+| Planificación y Gestión de Proyectos Informáticos                         |
+| Programación de Servicios Software                                        |
+| Desarrollo de interfaces de usuario                                       |
+| Ingeniería de Requisitos                                                  |
+| Integración de las Tecnologías de la Información en las Organizaciones    |
+| Modelado y Diseño del Software 1                                          |
+| Multiprocesadores                                                         |
+| Seguridad y cumplimiento normativo                                        |
+| Sistema de Información para las Organizaciones                            |
+| Tecnologías web                                                           |
+| Teoría de códigos y criptografía                                          |
+| Administración de bases de datos                                          |
+| Herramientas y Métodos de Ingeniería del Software                         |
+| Informática industrial y robótica                                         |
+| Ingeniería de Sistemas de Información                                     |
+| Modelado y Diseño del Software 2                                          |
+| Negocio Electrónico                                                       |
+| Periféricos e interfaces                                                  |
+| Sistemas de tiempo real                                                   |
+| Tecnologías de acceso a red                                               |
+| Tratamiento digital de imágenes                                           |
+| Administración de redes y sistemas operativos                             |
+| Líneas de Productos Software                                              |
++---------------------------------------------------------------------------+
+39 rows in set (0.00 sec)
+   ```
+
+3. Devuelve un listado de los profesores junto con el nombre del
+departamento al que están vinculados. El listado debe devolver cuatro
+columnas, primer apellido, segundo apellido, nombre y nombre del
+departamento. El resultado estará ordenado alfabéticamente de menor a
+mayor por los apellidos y el nombre.
+
+```mysql
+SELECT  p.apellido1_profesor, p.apellido2_profesor, p.nombre_profesor, d.nombre as departamento
+FROM profesor as p
+JOIN departamento as d ON d.id_departamento = p.id_departamento
+ORDER BY p.apellido1_profesor, p.apellido2_profesor, p.nombre_profesor ASC;
+
++--------------------+--------------------+-----------------+---------------------+
+| apellido1_profesor | apellido2_profesor | nombre_profesor | departamento        |
++--------------------+--------------------+-----------------+---------------------+
+| Domínguez          | Hernández          | María           | Matemáticas         |
+| Fahey              | Considine          | Antonio         | Economía y Empresa  |
+| Guerrero           | Martínez           | Juan            | Informática         |
+| Hamill             | Kozey              | Manolo          | Informática         |
+| Kohler             | Schoen             | Alejandro       | Matemáticas         |
+| Lemke              | Rutherford         | Cristina        | Economía y Empresa  |
+| Monahan            | Murray             | Micaela         | Agronomía           |
+| Ramirez            | Gea                | Zoe             | Informática         |
+| Ruecker            | Upton              | Guillermo       | Educación           |
+| Sánchez            | Ruiz               | Pepe            | Informática         |
+| Schmidt            | Fisher             | David           | Matemáticas         |
+| Schowalter         | Muller             | Francesca       | Química y Física    |
+| Spencer            | Lakin              | Esther          | Educación           |
+| Stiedemann         | Morissette         | Alfredo         | Química y Física    |
+| Streich            | Hirthe             | Carmen          | Educación           |
++--------------------+--------------------+-----------------+---------------------+
+15 rows in set (0.00 sec)
+   ```
+
+4. Devuelve un listado con el nombre de las asignaturas, año de inicio y año de fin del curso escolar del alumno con nif 26902806M.
+
+```mysql
+SELECT alum.nombre_alumno, a.nombre as asignatura, c.anyo_inicio, c.anyo_fin
+FROM alumno as alum
+JOIN alumno_se_matricula_asignatura as ama ON ama.id_alumno = alum.id_alumno
+JOIN asignatura as a ON a.id_asignatura = ama.id_asignatura
+JOIN curso_escolar as c ON c.id_curso = a.id_curso
+WHERE alum.nif = '26902806M';
+
++---------------+----------------------------------------+-------------+----------+
+| nombre_alumno | asignatura                             | anyo_inicio | anyo_fin |
++---------------+----------------------------------------+-------------+----------+
+| Salvador      | Álgegra lineal y matemática discreta   |        2015 |     2016 |
+| Salvador      | Cálculo                                |        2016 |     2017 |
+| Salvador      | Física para informática                |        2015 |     2016 |
++---------------+----------------------------------------+-------------+----------+
+3 rows in set (0.00 sec)
+   ```
+
+5. Devuelve un listado con el nombre de todos los departamentos que tienen
+profesores que imparten alguna asignatura en el Grado en Ingeniería
+Informática (Plan 2015).
+
+```mysql
+SELECT d.nombre as departamento
+FROM profesor as p
+JOIN departamento as d ON d.id_departamento = p.id_departamento
+JOIN asignatura as a ON a.id_profesor = p.id_profesor
+JOIN grado as g ON g.id_grado = a.id_grado
+WHERE g.nombre = 'Grado en Ingeniería Informática' AND g.anyo = 2015;
+
++---------------------+
+| departamento        |
++---------------------+
+| Informática         |
+| Matemáticas         |
+| Economía y Empresa  |
+| Educación           |
+| Educación           |
+| Química y Física    |
+| Informática         |
+| Matemáticas         |
+| Economía y Empresa  |
+| Agronomía           |
+| Informática         |
+| Educación           |
+| Química y Física    |
+| Informática         |
+| Informática         |
+| Matemáticas         |
+| Economía y Empresa  |
+| Informática         |
+| Informática         |
+| Informática         |
+| Informática         |
+| Química y Física    |
+| Matemáticas         |
+| Matemáticas         |
+| Matemáticas         |
+| Educación           |
+| Matemáticas         |
+| Economía y Empresa  |
+| Educación           |
+| Educación           |
+| Química y Física    |
+| Informática         |
+| Informática         |
+| Informática         |
+| Matemáticas         |
+| Educación           |
+| Matemáticas         |
+| Química y Física    |
+| Educación           |
++---------------------+
+39 rows in set (0.00 sec)
+   ```
+
+6. Devuelve un listado con todos los alumnos que se han matriculado en
+alguna asignatura durante el curso escolar 2018/2019.
+
+```mysql
+SELECT DISTINCT a.nombre_alumno, a.nif, a.apellido1_alumno, a.apellido2_alumno
+FROM alumno AS a
+INNER JOIN alumno_se_matricula_asignatura AS ams ON a.id_alumno = ams.id_alumno
+INNER JOIN asignatura AS asig ON ams.id_asignatura = asig.id_asignatura
+INNER JOIN curso_escolar AS ce ON ams.id_curso = ce.id_curso
+WHERE ce.anyo_inicio = 2018 AND ce.anyo_fin = 2019;
+
+Empty set (0.01 sec)
+   ```
+
