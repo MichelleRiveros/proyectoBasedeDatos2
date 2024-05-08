@@ -965,3 +965,525 @@ WHERE am.id_asignatura IS NULL;
 +---------------------+---------------------------------------------------------------------------+
 29 rows in set (0.00 sec)
    ```
+
+**Consultas resumen**
+
+1. Devuelve el número total de alumnas que hay.
+
+```mysql
+SELECT COUNT(*) AS total_alumnas
+FROM alumno
+WHERE id_sexo = (SELECT id_sexo FROM sexo WHERE tipo = 'Femenino');
+
++---------------+
+| total_alumnas |
++---------------+
+|             3 |
++---------------+
+1 row in set (0.14 sec)
+   ```
+
+2. Calcula cuántos alumnos nacieron en 1999.
+
+```mysql
+SELECT COUNT(*) AS total_alumnos_nacidos_1999
+FROM alumno
+WHERE YEAR(fecha_nacimiento) = 1999;
+
++----------------------------+
+| total_alumnos_nacidos_1999 |
++----------------------------+
+|                          2 |
++----------------------------+
+1 row in set (0.00 sec)
+   ```
+
+3. Calcula cuántos profesores hay en cada departamento. El resultado sólo
+debe mostrar dos columnas, una con el nombre del departamento y otra
+con el número de profesores que hay en ese departamento. El resultado
+sólo debe incluir los departamentos que tienen profesores asociados y
+deberá estar ordenado de mayor a menor por el número de profesores.
+
+```mysql
+SELECT d.nombre AS nombre_departamento, COUNT(p.id_profesor) AS cantidad_profesores
+FROM departamento d
+LEFT JOIN profesor p ON d.id_departamento = p.id_departamento
+GROUP BY d.nombre
+HAVING COUNT(p.id_profesor) > 0
+ORDER BY cantidad_profesores DESC;
+
+
++---------------------+---------------------+
+| nombre_departamento | cantidad_profesores |
++---------------------+---------------------+
+| Informática         |                   4 |
+| Matemáticas         |                   3 |
+| Educación           |                   3 |
+| Economía y Empresa  |                   2 |
+| Química y Física    |                   2 |
+| Agronomía           |                   1 |
++---------------------+---------------------+
+6 rows in set (0.00 sec)
+   ```
+
+4. Devuelve un listado con todos los departamentos y el número de profesores
+que hay en cada uno de ellos. Tenga en cuenta que pueden existir
+departamentos que no tienen profesores asociados. Estos departamentos
+también tienen que aparecer en el listado.
+
+```mysql
+SELECT d.nombre AS nombre_departamento, COUNT(p.id_profesor) AS cantidad_profesores
+FROM departamento d
+LEFT JOIN profesor p ON d.id_departamento = p.id_departamento
+GROUP BY d.nombre;
+
++-----------------------+---------------------+
+| nombre_departamento   | cantidad_profesores |
++-----------------------+---------------------+
+| Informática           |                   4 |
+| Matemáticas           |                   3 |
+| Economía y Empresa    |                   2 |
+| Educación             |                   3 |
+| Agronomía             |                   1 |
+| Química y Física      |                   2 |
+| Filología             |                   0 |
+| Derecho               |                   0 |
+| Biología y Geología   |                   0 |
++-----------------------+---------------------+
+9 rows in set (0.00 sec)
+   ```
+
+5. Devuelve un listado con el nombre de todos los grados existentes en la base
+de datos y el número de asignaturas que tiene cada uno. Tenga en cuenta
+que pueden existir grados que no tienen asignaturas asociadas. Estos grados también tienen que aparecer en el listado. El resultado deberá estar ordenado de mayor a menor por el número de asignaturas.
+
+```mysql
+SELECT g.nombre AS nombre_grado, COUNT(a.id_asignatura) AS cantidad_asignaturas
+FROM grado g
+LEFT JOIN asignatura a ON g.id_grado = a.id_grado
+GROUP BY g.nombre
+ORDER BY cantidad_asignaturas DESC;
+
++----------------------------------------------+----------------------+
+| nombre_grado                                 | cantidad_asignaturas |
++----------------------------------------------+----------------------+
+| Grado en Ingeniería Informática              |                   39 |
+| Grado en Biotecnología                       |                    1 |
+| Grado en Ingeniería Agrícola                 |                    0 |
+| Grado en Ingeniería Eléctrica                |                    0 |
+| Grado en Ingeniería Electrónica Industrial   |                    0 |
+| Grado en Ingeniería Mecánica                 |                    0 |
+| Grado en Ingeniería Química Industrial       |                    0 |
+| Grado en Ciencias Ambientales                |                    0 |
+| Grado en Matemáticas                         |                    0 |
+| Grado en Química                             |                    0 |
++----------------------------------------------+----------------------+
+10 rows in set (0.00 sec)
+   ```
+
+6. Devuelve un listado con el nombre de todos los grados existentes en la base de datos y el número de asignaturas que tiene cada uno, de los grados que tengan más de 40 asignaturas asociadas.
+
+```mysql
+SELECT g.nombre AS nombre_grado, COUNT(a.id_asignatura) AS cantidad_asignaturas
+FROM grado g
+JOIN asignatura a ON g.id_grado = a.id_grado
+GROUP BY g.nombre
+HAVING COUNT(a.id_asignatura) > 40
+ORDER BY cantidad_asignaturas DESC;
+
+Empty set (0.00 sec)
+   ```
+
+7. Devuelve un listado que muestre el nombre de los grados y la suma del
+número total de créditos que hay para cada tipo de asignatura. El resultado
+debe tener tres columnas: nombre del grado, tipo de asignatura y la suma
+de los créditos de todas las asignaturas que hay de ese tipo. Ordene el
+resultado de mayor a menor por el número total de crédidos.
+
+```mysql
+SELECT g.nombre AS nombre_grado, ta.tipo_asignatura, SUM(a.creditos) AS suma_creditos
+FROM grado g
+JOIN asignatura a ON g.id_grado = a.id_grado
+JOIN tipo_asignatura ta ON a.id_tipo_asignatura = ta.id_tipo
+GROUP BY g.nombre, ta.tipo_asignatura
+ORDER BY suma_creditos DESC;
+
++-----------------------------------+-----------------+---------------+
+| nombre_grado                      | tipo_asignatura | suma_creditos |
++-----------------------------------+-----------------+---------------+
+| Grado en Ingeniería Informática   | Básica          |            96 |
+| Grado en Ingeniería Informática   | Optativa        |            78 |
+| Grado en Ingeniería Informática   | Obligatoria     |            60 |
+| Grado en Biotecnología            | Obligatoria     |             6 |
++-----------------------------------+-----------------+---------------+
+4 rows in set (0.01 sec)
+   ```
+
+8. Devuelve un listado que muestre cuántos alumnos se han matriculado de
+alguna asignatura en cada uno de los cursos escolares. El resultado deberá
+mostrar dos columnas, una columna con el año de inicio del curso escolar y
+otra con el número de alumnos matriculados.
+
+```mysql
+SELECT ce.anyo_inicio AS año_inicio_curso, COUNT(DISTINCT ama.id_alumno) AS numero_alumnos_matriculados
+FROM curso_escolar ce
+LEFT JOIN alumno_se_matricula_asignatura ama ON ce.id_curso = ama.id_curso
+GROUP BY ce.anyo_inicio;
+
+
++-------------------+-----------------------------+
+| año_inicio_curso  | numero_alumnos_matriculados |
++-------------------+-----------------------------+
+|              2014 |                           3 |
+|              2015 |                           3 |
+|              2016 |                           1 |
+|              2017 |                           1 |
++-------------------+-----------------------------+
+4 rows in set (0.00 sec)
+
+   ```
+
+9. Devuelve un listado con el número de asignaturas que imparte cada
+profesor. El listado debe tener en cuenta aquellos profesores que no
+imparten ninguna asignatura. El resultado mostrará cinco columnas: id,
+nombre, primer apellido, segundo apellido y número de asignaturas. El
+resultado estará ordenado de mayor a menor por el número de asignaturas.
+
+```mysql
+SELECT 
+    p.id_profesor AS id,
+    p.nombre_profesor AS nombre,
+    p.apellido1_profesor AS primer_apellido,
+    p.apellido2_profesor AS segundo_apellido,
+    COUNT(a.id_asignatura) AS numero_asignaturas
+FROM profesor p
+LEFT JOIN asignatura a ON p.id_profesor = a.id_profesor
+GROUP BY p.id_profesor, p.nombre_profesor, p.apellido1_profesor, p.apellido2_profesor
+ORDER BY numero_asignaturas DESC;
+
++----+-----------+-----------------+------------------+--------------------+
+| id | nombre    | primer_apellido | segundo_apellido | numero_asignaturas |
++----+-----------+-----------------+------------------+--------------------+
+| 14 | Manolo    | Hamill          | Kozey            |                  6 |
+| 10 | Esther    | Spencer         | Lakin            |                  4 |
+| 23 | María     | Domínguez       | Hernández        |                  4 |
+| 12 | Carmen    | Streich         | Hirthe           |                  3 |
+| 13 | Alfredo   | Stiedemann      | Morissette       |                  3 |
+| 15 | Alejandro | Kohler          | Schoen           |                  3 |
+| 21 | Pepe      | Sánchez         | Ruiz             |                  3 |
+| 22 | Juan      | Guerrero        | Martínez         |                  3 |
+|  5 | David     | Schmidt         | Fisher           |                  2 |
+|  8 | Cristina  | Lemke           | Rutherford       |                  2 |
+| 16 | Antonio   | Fahey           | Considine        |                  2 |
+| 20 | Francesca | Schowalter      | Muller           |                  2 |
+|  3 | Zoe       | Ramirez         | Gea              |                  1 |
+| 17 | Guillermo | Ruecker         | Upton            |                  1 |
+| 18 | Micaela   | Monahan         | Murray           |                  1 |
++----+-----------+-----------------+------------------+--------------------+
+15 rows in set (0.00 sec)
+   ```
+
+**Subconsultas**
+
+1. Devuelve todos los datos del alumno más joven.
+
+```mysql
+
+SELECT nif, nombre_alumno, apellido1_alumno, apellido2_alumno, fecha_nacimiento, id_sexo
+FROM alumno
+WHERE fecha_nacimiento = (SELECT MIN(fecha_nacimiento) FROM alumno);
+
++-----------+-----------+---------------+------------------+------------------+------------------+---------+
+| id_alumno | nif       | nombre_alumno | apellido1_alumno | apellido2_alumno | fecha_nacimiento | id_sexo |
++-----------+-----------+---------------+------------------+------------------+------------------+---------+
+|         2 | 26902806M | Salvador      | Sánchez          | Pérez            | 1991-03-28       |       1 |
++-----------+-----------+---------------+------------------+------------------+------------------+---------+
+1 row in set (0.01 sec)
+   ```
+
+2. Devuelve un listado con los profesores que no están asociados a un
+departamento.
+
+```mysql
+SELECT *
+FROM profesor
+WHERE id_departamento IS NULL;
+
+Empty set (0.00 sec)
+   ```
+
+3. Devuelve un listado con los departamentos que no tienen profesores
+asociados.
+
+```mysql
+SELECT *
+FROM departamento
+WHERE id_departamento NOT IN (SELECT id_departamento FROM profesor);
+
++-----------------+-----------------------+
+| id_departamento | nombre                |
++-----------------+-----------------------+
+|               7 | Filología             |
+|               8 | Derecho               |
+|               9 | Biología y Geología   |
++-----------------+-----------------------+
+3 rows in set (0.00 sec)
+   ```
+
+4. Devuelve un listado con los profesores que tienen un departamento
+asociado y que no imparten ninguna asignatura.
+
+```mysql
+SELECT nombre_profesor
+FROM profesor
+WHERE id_departamento IS NOT NULL
+AND id_profesor NOT IN (SELECT id_profesor FROM asignatura);
+
+Empty set (0.00 sec)
+   ```
+
+5. Devuelve un listado con las asignaturas que no tienen un profesor asignado.
+
+```mysql
+SELECT nombre
+FROM asignatura
+WHERE id_profesor IS NULL;
+
+Empty set (0.00 sec)
+   ```
+
+6. Devuelve un listado con todos los departamentos que no han impartido
+asignaturas en ningún curso escolar.
+
+```mysql
+SELECT d.*
+FROM departamento d
+LEFT JOIN profesor p ON d.id_departamento = p.id_departamento
+LEFT JOIN asignatura a ON p.id_profesor = a.id_profesor
+GROUP BY d.id_departamento
+HAVING COUNT(a.id_asignatura) = 0;
+
++-----------------+-----------------------+
+| id_departamento | nombre                |
++-----------------+-----------------------+
+|               7 | Filología             |
+|               8 | Derecho               |
+|               9 | Biología y Geología   |
++-----------------+-----------------------+
+3 rows in set (0.00 sec)
+   ```
+
+- Procedimientos
+  
+1. Crear un nuevo país:
+   
+```mysql
+CREATE PROCEDURE CrearPais(
+    IN nombre_pais VARCHAR(100)
+)
+BEGIN
+    INSERT INTO pais (nombre) VALUES (nombre_pais);
+END;
+   ```
+
+2. Actualizar el nombre de un país:
+   
+```mysql
+CREATE PROCEDURE ActualizarNombrePais(
+    IN id_pais INT,
+    IN nuevo_nombre VARCHAR(100)
+)
+BEGIN
+    UPDATE pais SET nombre = nuevo_nombre WHERE id_pais = id_pais;
+END;
+   ```
+
+3. Eliminar un país por ID:
+   
+```mysql
+CREATE PROCEDURE EliminarPaisPorID(
+    IN id_pais INT
+)
+BEGIN
+    DELETE FROM pais WHERE id_pais = id_pais;
+END;
+   ```
+
+4. Buscar país por nombre:
+   
+```mysql
+CREATE PROCEDURE BuscarPaisPorNombre(
+    IN nombre_pais VARCHAR(100)
+)
+BEGIN
+    SELECT * FROM pais WHERE nombre = nombre_pais;
+END;
+   ```
+
+5. Crear una nueva asignatura:
+   
+```mysql
+CREATE PROCEDURE CrearAsignatura(
+    IN nombre_asignatura VARCHAR(100),
+    IN creditos FLOAT,
+    IN cuatrimestre TINYINT(3),
+    IN id_tipo_asignatura INT,
+    IN id_curso INT,
+    IN id_profesor INT,
+    IN id_grado INT
+)
+BEGIN
+    INSERT INTO asignatura (nombre, creditos, cuatrimestre, id_tipo_asignatura, id_curso, id_profesor, id_grado)
+    VALUES (nombre_asignatura, creditos, cuatrimestre, id_tipo_asignatura, id_curso, id_profesor, id_grado);
+END;
+   ```
+
+6. Actualizar el nombre de una asignatura por ID:
+   
+```mysql
+CREATE PROCEDURE ActualizarNombreAsignatura(
+    IN id_asignatura INT,
+    IN nuevo_nombre VARCHAR(100)
+)
+BEGIN
+    UPDATE asignatura SET nombre = nuevo_nombre WHERE id_asignatura = id_asignatura;
+END;
+   ```
+
+7. Eliminar una asignatura por ID:
+   
+```mysql
+CREATE PROCEDURE EliminarAsignaturaPorID(
+    IN id_asignatura INT
+)
+BEGIN
+    DELETE FROM asignatura WHERE id_asignatura = id_asignatura;
+END;
+   ```
+
+8. Buscar asignaturas por ID de curso:
+   
+```mysql
+CREATE PROCEDURE BuscarAsignaturasPorIDCurso(
+    IN id_curso INT
+)
+BEGIN
+    SELECT * FROM asignatura WHERE id_curso = id_curso;
+END;
+   ```
+
+9. Actualizar el nombre de un profesor por ID:
+    
+```mysql
+CREATE PROCEDURE ActualizarNombreProfesor(
+    IN id_profesor INT,
+    IN nuevo_nombre VARCHAR(100)
+)
+BEGIN
+    UPDATE profesor SET nombre_profesor = nuevo_nombre WHERE id_profesor = id_profesor;
+END;
+   ```
+
+10. Eliminar un profesor por ID:
+    
+```mysql
+CREATE PROCEDURE EliminarProfesorPorID(
+    IN id_profesor INT
+)
+BEGIN
+    DELETE FROM profesor WHERE id_profesor = id_profesor;
+END;
+   ```    
+
+- Vistas
+
+1. Vista de información de todos los profesores:
+   
+```mysql
+CREATE VIEW VistaProfesores AS
+SELECT id_profesor, nif, nombre_profesor, apellido1_profesor, apellido2_profesor, fecha_nacimiento, id_sexo, id_departamento
+FROM profesor;
+   ```    
+
+2. Vista de información de todas las asignaturas:
+
+```mysql
+CREATE VIEW VistaAsignaturas AS
+SELECT id_asignatura, nombre, creditos, cuatrimestre, id_tipo_asignatura, id_curso, id_profesor, id_grado
+FROM asignatura;
+   ```
+
+3. Vista de información de todos los países y sus regiones:
+   
+```mysql
+CREATE VIEW VistaPaisesRegiones AS
+SELECT p.nombre AS nombre_pais, r.nombre AS nombre_region
+FROM pais p
+LEFT JOIN region r ON p.id_pais = r.id_pais;
+   ```
+
+4. Vista de información de todos los alumnos matriculados en asignaturas:
+   
+```mysql
+CREATE VIEW VistaAlumnosMatriculados AS
+SELECT a.id_alumno, a.nif, a.nombre_alumno, a.apellido1_alumno, a.apellido2_alumno, a.fecha_nacimiento, a.id_sexo, COUNT(am.id_alumno) AS num_matriculas
+FROM alumno a
+LEFT JOIN alumno_se_matricula_asignatura am ON a.id_alumno = am.id_alumno
+GROUP BY a.id_alumno;
+   ```
+
+5. Vista de información de todos los profesores y sus asignaturas impartidas:
+
+```mysql
+CREATE VIEW VistaProfesoresAsignaturas AS
+SELECT p.id_profesor, p.nif, p.nombre_profesor, p.apellido1_profesor, p.apellido2_profesor, p.fecha_nacimiento, p.id_sexo, p.id_departamento, a.*
+FROM profesor p
+LEFT JOIN asignatura a ON p.id_profesor = a.id_profesor;
+   ```
+
+6. Vista de información de todos los cursos escolares y las asignaturas asociadas:
+   
+```mysql
+CREATE VIEW VistaCursosAsignaturas AS
+SELECT ce.id_curso, ce.anyo_inicio, ce.anyo_fin, a.*
+FROM curso_escolar ce
+LEFT JOIN asignatura a ON ce.id_curso = a.id_curso;
+   ```
+
+7.Vista de información de todos los teléfonos de los profesores:
+
+```mysql
+CREATE VIEW VistaTelefonosProfesores AS
+SELECT p.id_profesor, t.id_telefono, t.numero, t.prefijo, t.tipo_de_telefono
+FROM profesor p
+LEFT JOIN profesor_telefono pt ON p.id_profesor = pt.id_profesor
+LEFT JOIN telefono t ON pt.id_telefono = t.id_telefono;
+   ```
+
+8. Vista de información de todos los alumnos y sus direcciones:
+   
+```mysql
+CREATE VIEW VistaAlumnosDirecciones AS
+SELECT a.id_alumno, a.nif, a.nombre_alumno, a.apellido1_alumno, a.apellido2_alumno, a.fecha_nacimiento, a.id_sexo, d.*
+FROM alumno a
+LEFT JOIN alumno_direccion ad ON a.id_alumno = ad.id_alumno
+LEFT JOIN direccion d ON ad.id_direccion = d.id_direccion;
+   ```
+ 
+9. Vista de información de todas las ciudades y sus direcciones asociadas:
+    
+```mysql
+CREATE VIEW VistaCiudadesDirecciones AS
+SELECT c.nombre AS nombre_ciudad, d.*
+FROM ciudad c
+LEFT JOIN direccion d ON c.id_ciudad = d.id_ciudad;
+   ```
+
+10. Vista de información de todas las asignaturas y sus profesores:
+    
+```mysql
+CREATE VIEW VistaAsignaturasProfesores AS
+SELECT a.id_asignatura, a.nombre, a.creditos, a.cuatrimestre, a.id_tipo_asignatura, a.id_curso, a.id_profesor, a.id_grado, p.*
+FROM asignatura a
+LEFT JOIN profesor p ON a.id_profesor = p.id_profesor;
+   ```   
