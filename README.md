@@ -259,7 +259,7 @@ INSERT INTO curso_escolar VALUES
 (3, 2016, 2017),
 (4, 2017, 2018);
 
--- sexo
+- sexo
 INSERT INTO sexo (tipo) VALUES
 ('Masculino'),
 ('Femenino'),
@@ -278,7 +278,7 @@ INSERT INTO departamento VALUES (7, 'Filología');
 INSERT INTO departamento VALUES (8, 'Derecho');
 INSERT INTO departamento VALUES (9, 'Biología y Geología');
 
--- direccion
+- direccion
 INSERT INTO direccion (linea_direccion, barrio, codigo_postal, id_ciudad) VALUES
 ('C/ Alameda, 12', 'Centro', '28001', 1),
 ('Av. de la Constitución, 45', 'La Latina', '28005', 1),
@@ -311,7 +311,7 @@ INSERT INTO direccion (linea_direccion, barrio, codigo_postal, id_ciudad) VALUES
 ('C/ Bravo Murillo, 230', 'Tetuán', '28020', 1);
 
 
--- telefono
+- telefono
 INSERT INTO telefono (numero, prefijo, tipo_de_telefono) VALUES
 ('123456789', '+34', 'Móvil'),
 ('987654321', '+34', 'Fijo'),
@@ -342,7 +342,7 @@ INSERT INTO telefono (numero, prefijo, tipo_de_telefono) VALUES
 ('222222222', '+34', 'Trabajo'),
 ('333333333', '+34', 'Fax');
 
--- profesor
+- profesor
 
 INSERT INTO profesor VALUES (3, '11105554G', 'Zoe', 'Ramirez', 'Gea', '1979-08-19', 3, 1);
 INSERT INTO profesor VALUES (5, '38223286T', 'David', 'Schmidt', 'Fisher', '1978-01-19', 2, 2);
@@ -360,7 +360,7 @@ INSERT INTO profesor VALUES (21, '13175769N', 'Pepe', 'Sánchez', 'Ruiz', '1980-
 INSERT INTO profesor VALUES (22, '98816696W', 'Juan', 'Guerrero', 'Martínez', '1980-11-21', 2, 1);
 INSERT INTO profesor VALUES (23, '77194445M', 'María', 'Domínguez', 'Hernández', '1980-12-13', 3, 2);
 
--- Asignatura
+- Asignatura
 
 INSERT INTO asignatura VALUES (1, 'Álgegra lineal y matemática discreta', 6, 1, 1, 2, 3, 4);
 INSERT INTO asignatura VALUES (2, 'Cálculo', 6, 1, 1, 3, 5, 4);
@@ -402,5 +402,130 @@ INSERT INTO asignatura VALUES (37, 'Sistemas de tiempo real', 6, 4, 2, 2, 23, 4)
 INSERT INTO asignatura VALUES (38, 'Tecnologías de acceso a red', 6, 4, 1, 1, 17, 4);
 INSERT INTO asignatura VALUES (39, 'Tratamiento digital de imágenes', 6, 4, 1, 3, 15, 4);
 INSERT INTO asignatura VALUES (40, 'Administración de redes y sistemas operativos', 6, 5, 3, 4, 13, 4);
+
+- profesor_telefono
+
+INSERT INTO profesor_telefono (id_profesor, id_telefono) VALUES
+(3, 1), -- Zoe Ramirez tiene el teléfono móvil con número 123456789
+(3, 4), -- Zoe Ramirez tiene el teléfono de trabajo con número 555555555
+(5, 2), -- David Schmidt tiene el teléfono fijo con número 987654321
+(8, 3), -- Cristina Lemke tiene el teléfono de trabajo con número 246813579
+(10, 4), -- Esther Spencer tiene el teléfono de trabajo con número 555555555
+(12, 4), -- Carmen Streich tiene el teléfono de trabajo con número 555555555
+(13, 6), -- Alfredo Stiedemann tiene el teléfono móvil con número 123123123
+(14, 1), -- Manolo Hamill tiene el teléfono móvil con número 123456789
+(15, 2), -- Alejandro Kohler tiene el teléfono fijo con número 987654321
+(16, 3), -- Antonio Fahey tiene el teléfono de trabajo con número 246813579
+(17, 4), -- Guillermo Ruecker tiene el teléfono de trabajo con número 555555555
+(18, 5), -- Micaela Monahan tiene el teléfono de fax con número 333333333
+(20, 6), -- Francesca Schowalter tiene el teléfono móvil con número 123123123
+(21, 1), -- Pepe Sánchez tiene el teléfono móvil con número 123456789
+(22, 1), -- Juan Guerrero tiene el teléfono móvil con número 123456789
+(23, 2); -- María Domínguez tiene el teléfono fijo con número 987654321
+
+- profesor_direccion
+
+INSERT INTO profesor_direccion (id_profesor, id_direccion) VALUES
+(3, 1), -- Zoe Ramirez reside en la dirección C/ Alameda, 12, Centro, 28001
+(5, 2), -- David Schmidt reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(8, 3), -- Cristina Lemke reside en la dirección C/ Gran Vía, 123, Malasaña, 28004
+(10, 4), -- Esther Spencer reside en la dirección C/ Fuencarral, 67, Chueca, 28010
+(12, 4), -- Carmen Streich reside en la dirección C/ Fuencarral, 67, Chueca, 28010
+(13, 6), -- Alfredo Stiedemann reside en la dirección Av. de América, 33, Chamartín, 28002
+(14, 1), -- Manolo Hamill reside en la dirección C/ Alameda, 12, Centro, 28001
+(15, 2), -- Alejandro Kohler reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(16, 3), -- Antonio Fahey reside en la dirección C/ Gran Vía, 123, Malasaña, 28004
+(17, 4), -- Guillermo Ruecker reside en la dirección C/ Fuencarral, 67, Chueca, 28010
+(18, 5), -- Micaela Monahan reside en la dirección Paseo del Prado, 5, Retiro, 28014
+(20, 6), -- Francesca Schowalter reside en la dirección Av. de América, 33, Chamartín, 28002
+(21, 1), -- Pepe Sánchez reside en la dirección C/ Alameda, 12, Centro, 28001
+(22, 1), -- Juan Guerrero reside en la dirección C/ Alameda, 12, Centro, 28001
+(23, 2); -- María Domínguez reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+
+- Alumno
+
+INSERT INTO alumno VALUES (1, '89542419S', 'Juan', 'Saez', 'Vega', '1992/08/08', 2);
+INSERT INTO alumno VALUES (2, '26902806M', 'Salvador', 'Sánchez', 'Pérez', '1991/03/28', 2);
+INSERT INTO alumno VALUES (4, '17105885A', 'Pedro', 'Heller', 'Pagac', '2000/10/05', 2);
+INSERT INTO alumno VALUES (6, '04233869Y', 'José', 'Koss', 'Bayer', '1998/01/28', 2);
+INSERT INTO alumno VALUES (7, '97258166K', 'Ismael', 'Strosin', 'Turcotte', '1999/05/24', 2);
+INSERT INTO alumno VALUES (9, '82842571K', 'Ramón', 'Herzog', 'Tremblay', '1996/11/21', 2);
+INSERT INTO alumno VALUES (11, '46900725E', 'Daniel', 'Herman', 'Pacocha', '1997/04/26', 2);
+INSERT INTO alumno VALUES (19, '11578526G', 'Inma', 'Lakin', 'Yundt', '1998/09/01', 3);
+INSERT INTO alumno VALUES (21, '79089577Y', 'Juan', 'Gutiérrez', 'López', '1998/01/01', 2);
+INSERT INTO alumno VALUES (22, '41491230N', 'Antonio', 'Domínguez', 'Guerrero', '1999/02/11', 2);
+INSERT INTO alumno VALUES (23, '64753215G', 'Irene', 'Hernández', 'Martínez', '1996/03/12', 3);
+INSERT INTO alumno VALUES (24, '85135690V', 'Sonia', 'Gea', 'Ruiz', '1995/04/13', 3);
+
+alumno_direccion
+
+INSERT INTO alumno_direccion (id_alumno, id_direccion) VALUES
+(1, 2), -- Juan Saez reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(2, 2), -- Salvador Sánchez reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(4, 2), -- Pedro Heller reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(6, 2), -- José Koss reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(7, 2), -- Ismael Strosin reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(9, 2), -- Ramón Herzog reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(11, 2), -- Daniel Herman reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(19, 3), -- Inma Lakin reside en la dirección C/ Gran Vía, 123, Malasaña, 28004
+(21, 2), -- Juan Gutiérrez reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(22, 2), -- Antonio Domínguez reside en la dirección Av. de la Constitución, 45, La Latina, 28005
+(23, 3), -- Irene Hernández reside en la dirección C/ Gran Vía, 123, Malasaña, 28004
+(24, 3); -- Sonia Gea reside en la dirección C/ Gran Vía, 123, Malasaña, 28004
+
+- alumno_telefono
+
+INSERT INTO alumno_telefono (id_alumno, id_telefono) VALUES
+(1, 1), -- Juan Saez tiene el teléfono móvil con número 123456789
+(2, 2), -- Salvador Sánchez tiene el teléfono fijo con número 987654321
+(4, 3), -- Pedro Heller tiene el teléfono de trabajo con número 246813579
+(6, 4), -- José Koss tiene el teléfono de fax con número 555555555
+(7, 5), -- Ismael Strosin tiene el teléfono móvil con número 999888777
+(9, 6), -- Ramón Herzog tiene el teléfono móvil con número 666666666
+(11, 7), -- Daniel Herman tiene el teléfono de trabajo con número 777777777
+(19, 8), -- Inma Lakin tiene el teléfono de fax con número 333333333
+(21, 9), -- Juan Gutiérrez tiene el teléfono móvil con número 123123123
+(22, 10), -- Antonio Domínguez tiene el teléfono fijo con número 456456456
+(23, 11), -- Irene Hernández tiene el teléfono de trabajo con número 789789789
+(24, 12); -- Sonia Gea tiene el teléfono de fax con número 111111111
+
+- alumno_se_matricula_asignatura
+
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 1, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 2, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 3, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 4, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 5, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 6, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 7, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 8, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 9, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 10, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 1, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 2, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 3, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 1, 3);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 2, 3);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 3, 3);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 1, 4);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 2, 4);
+INSERT INTO alumno_se_matricula_asignatura VALUES (1, 3, 4);
+INSERT INTO alumno_se_matricula_asignatura VALUES (2, 1, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (2, 2, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (2, 3, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 1, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 2, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 3, 1);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 1, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 2, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 3, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 4, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 5, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 6, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 7, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 8, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 9, 2);
+INSERT INTO alumno_se_matricula_asignatura VALUES (4, 10, 2);
+
 
 
