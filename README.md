@@ -823,3 +823,145 @@ WHERE ce.anyo_inicio = 2018 AND ce.anyo_fin = 2019;
 Empty set (0.01 sec)
    ```
 
+**Consultas multitabla (Composición externa)**
+Resuelva todas las consultas utilizando las cláusulas LEFT JOIN y RIGHT JOIN.
+
+1. Devuelve un listado con los nombres de todos los profesores y los
+departamentos que tienen vinculados. El listado también debe mostrar
+aquellos profesores que no tienen ningún departamento asociado. El listado
+debe devolver cuatro columnas, nombre del departamento, primer apellido,
+segundo apellido y nombre del profesor. El resultado estará ordenado
+alfabéticamente de menor a mayor por el nombre del departamento,
+apellidos y el nombre.
+
+```mysql
+SELECT d.nombre AS nombre_departamento, p.apellido1_profesor, p.apellido2_profesor, p.nombre_profesor
+FROM profesor AS p
+LEFT JOIN departamento AS d ON p.id_departamento = d.id_departamento
+ORDER BY IFNULL(d.nombre, ''), p.apellido1_profesor, p.apellido2_profesor, p.nombre_profesor;
+
++---------------------+--------------------+--------------------+-----------------+
+| nombre_departamento | apellido1_profesor | apellido2_profesor | nombre_profesor |
++---------------------+--------------------+--------------------+-----------------+
+| Agronomía           | Monahan            | Murray             | Micaela         |
+| Economía y Empresa  | Fahey              | Considine          | Antonio         |
+| Economía y Empresa  | Lemke              | Rutherford         | Cristina        |
+| Educación           | Ruecker            | Upton              | Guillermo       |
+| Educación           | Spencer            | Lakin              | Esther          |
+| Educación           | Streich            | Hirthe             | Carmen          |
+| Informática         | Guerrero           | Martínez           | Juan            |
+| Informática         | Hamill             | Kozey              | Manolo          |
+| Informática         | Ramirez            | Gea                | Zoe             |
+| Informática         | Sánchez            | Ruiz               | Pepe            |
+| Matemáticas         | Domínguez          | Hernández          | María           |
+| Matemáticas         | Kohler             | Schoen             | Alejandro       |
+| Matemáticas         | Schmidt            | Fisher             | David           |
+| Química y Física    | Schowalter         | Muller             | Francesca       |
+| Química y Física    | Stiedemann         | Morissette         | Alfredo         |
++---------------------+--------------------+--------------------+-----------------+
+15 rows in set (0.00 sec)
+   ```
+
+2. Devuelve un listado con los profesores que no están asociados a un
+departamento.
+
+```mysql
+SELECT p.nombre_profesor, p.apellido1_profesor, p.apellido2_profesor
+FROM profesor AS p
+LEFT JOIN departamento AS d ON p.id_departamento = d.id_departamento
+WHERE d.id_departamento IS NULL;
+
+Empty set (0.00 sec)
+   ```
+
+3. Devuelve un listado con los departamentos que no tienen profesores
+asociados.
+
+```mysql
+SELECT d.nombre AS nombre_departamento
+FROM departamento AS d
+LEFT JOIN profesor AS p ON d.id_departamento = p.id_departamento
+WHERE p.id_departamento IS NULL;
+
++-----------------------+
+| nombre_departamento   |
++-----------------------+
+| Filología             |
+| Derecho               |
+| Biología y Geología   |
++-----------------------+
+3 rows in set (0.00 sec)
+   ```
+
+4. Devuelve un listado con los profesores que no imparten ninguna asignatura.
+
+```mysql
+SELECT p.nombre_profesor, p.apellido1_profesor, p.apellido2_profesor
+FROM profesor AS p
+LEFT JOIN asignatura AS a ON p.id_profesor = a.id_profesor
+WHERE a.id_profesor IS NULL;
+
+Empty set (0.00 sec)
+   ```
+
+5. Devuelve un listado con las asignaturas que no tienen un profesor asignado.
+
+```mysql
+SELECT a.nombre AS nombre_asignatura
+FROM asignatura AS a
+LEFT JOIN profesor AS p ON a.id_profesor = p.id_profesor
+WHERE p.id_profesor IS NULL;
+
+
+Empty set (0.00 sec)
+   ```
+
+6. Devuelve un listado con todos los departamentos que tienen alguna
+asignatura que no se haya impartido en ningún curso escolar. El resultado
+debe mostrar el nombre del departamento y el nombre de la asignatura que
+no se haya impartido nunca.
+
+```mysql
+SELECT d.nombre AS nombre_departamento, a.nombre AS nombre_asignatura
+FROM departamento d
+JOIN profesor p ON d.id_departamento = p.id_departamento
+JOIN asignatura a ON p.id_profesor = a.id_profesor
+LEFT JOIN alumno_se_matricula_asignatura am ON a.id_asignatura = am.id_asignatura
+WHERE am.id_asignatura IS NULL;
+
+
++---------------------+---------------------------------------------------------------------------+
+| nombre_departamento | nombre_asignatura                                                         |
++---------------------+---------------------------------------------------------------------------+
+| Informática         | Arquitectura de Computadores                                              |
+| Informática         | Programación de Servicios Software                                        |
+| Informática         | Desarrollo de interfaces de usuario                                       |
+| Informática         | Modelado y Diseño del Software 2                                          |
+| Informática         | Almacenes de Datos                                                        |
+| Informática         | Sistemas Operativos                                                       |
+| Informática         | Ingeniería de Requisitos                                                  |
+| Informática         | Periféricos e interfaces                                                  |
+| Informática         | Sistemas Inteligentes                                                     |
+| Informática         | Integración de las Tecnologías de la Información en las Organizaciones    |
+| Informática         | Negocio Electrónico                                                       |
+| Matemáticas         | Teoría de códigos y criptografía                                          |
+| Matemáticas         | Fundamentos de Redes de Computadores                                      |
+| Matemáticas         | Tratamiento digital de imágenes                                           |
+| Matemáticas         | Multiprocesadores                                                         |
+| Matemáticas         | Seguridad y cumplimiento normativo                                        |
+| Matemáticas         | Sistema de Información para las Organizaciones                            |
+| Matemáticas         | Sistemas de tiempo real                                                   |
+| Economía y Empresa  | Administración de bases de datos                                          |
+| Economía y Empresa  | Planificación y Gestión de Proyectos Informáticos                         |
+| Educación           | Estructura de Datos y Algoritmos I                                        |
+| Educación           | Herramientas y Métodos de Ingeniería del Software                         |
+| Educación           | Tecnologías web                                                           |
+| Educación           | Informática industrial y robótica                                         |
+| Educación           | Tecnologías de acceso a red                                               |
+| Química y Física    | Ingeniería de Sistemas de Información                                     |
+| Química y Física    | Administración de redes y sistemas operativos                             |
+| Química y Física    | Ingeniería del Software                                                   |
+| Química y Física    | Modelado y Diseño del Software 1                                          |
++---------------------+---------------------------------------------------------------------------+
+29 rows in set (0.00 sec)
+   ```
