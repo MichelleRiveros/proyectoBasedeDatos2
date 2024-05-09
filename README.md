@@ -4,7 +4,7 @@
 
 ![image](bd2.PNG)
 ![image](bd21.PNG)
-![image](bd22.PNG)
+![image](bd23.PNG)
 
 2. DDL / Creacion de la base de datos:
 
